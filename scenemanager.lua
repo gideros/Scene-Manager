@@ -4,8 +4,11 @@ SceneManager v1.0.1
 changelog:
 ----------
 
+v1.0.2 - 17.11.2011
+Change event names
+
 v1.0.1 - 06.11.2011
-Added collectgarbage() to the end of transition
+Add collectgarbage() to the end of transition
 
 v1.0 - 06.11.2011
 Initial release
@@ -249,9 +252,9 @@ function SceneManager:changeScene(scene, duration, transition, ease)
 		self.scene1 = self.scenes[scene].new()
 		self:addChild(self.scene1)
 		dispatchEvent(self, "transitionBegin")
-		dispatchEvent(self.scene1, "transitionInBegin")
+		dispatchEvent(self.scene1, "enterBegin")
 		dispatchEvent(self, "transitionEnd")
-		dispatchEvent(self.scene1, "transitionInEnd")
+		dispatchEvent(self.scene1, "enterEnd")
 		return
 	end
 
@@ -276,8 +279,8 @@ function SceneManager:onEnterFrame(event)
 	if self.time == 0 then
 		self.scene2:setVisible(true)
 		dispatchEvent(self, "transitionBegin")
-		dispatchEvent(self.scene1, "transitionOutBegin")
-		dispatchEvent(self.scene2, "transitionInBegin")
+		dispatchEvent(self.scene1, "exitBegin")
+		dispatchEvent(self.scene2, "enterBegin")
 	end
 		
 	local timer = os.timer()
@@ -296,8 +299,8 @@ function SceneManager:onEnterFrame(event)
 
 	if self.time == self.duration then
 		dispatchEvent(self, "transitionEnd")
-		dispatchEvent(self.scene1, "transitionOutEnd")
-		dispatchEvent(self.scene2, "transitionInEnd")
+		dispatchEvent(self.scene1, "exitEnd")
+		dispatchEvent(self.scene2, "enterEnd")
 		
 		self:removeChild(self.scene1)
 		self.scene1 = self.scene2
