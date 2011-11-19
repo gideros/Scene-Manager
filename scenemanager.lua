@@ -4,6 +4,9 @@ SceneManager v1.0.1
 changelog:
 ----------
 
+v1.0.3 - 19.11.2011
+Fixed incorrect calculation of width/height in landscape modes
+
 v1.0.2 - 17.11.2011
 Change event names
 
@@ -21,34 +24,52 @@ This code is MIT licensed, see http://www.opensource.org/licenses/mit-license.ph
 
 SceneManager = gideros.class(Sprite)
 
+local function getContentWidth()
+	local orientation = stage:getOrientation() 	
+	if orientation == Stage.LANDSCAPE_LEFT or orientation == Stage.LANDSCAPE_RIGHT then
+		return application:getLogicalHeight()
+	else
+		return application:getLogicalWidth()
+	end
+end
+
+local function getContentHeight()
+	local orientation = stage:getOrientation() 	
+	if orientation == Stage.LANDSCAPE_LEFT or orientation == Stage.LANDSCAPE_RIGHT then
+		return application:getLogicalWidth()
+	else
+		return application:getLogicalHeight()
+	end
+end
+
 function SceneManager.moveFromRight(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 	
 	scene1:setX(-t * width)
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.moveFromLeft(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	scene1:setX(t * width)
 	scene2:setX((t - 1) * width)
 end
 
 function SceneManager.overFromRight(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.overFromLeft(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	scene2:setX((t - 1) * width)
 end
 
 function SceneManager.moveFromRightWithFade(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 	
 	scene1:setAlpha(1 - t)
 	scene1:setX(-t * width)
@@ -56,7 +77,7 @@ function SceneManager.moveFromRightWithFade(scene1, scene2, t)
 end
 
 function SceneManager.moveFromLeftWithFade(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	scene1:setAlpha(1 - t)
 	scene1:setX(t * width)
@@ -64,47 +85,47 @@ function SceneManager.moveFromLeftWithFade(scene1, scene2, t)
 end
 
 function SceneManager.overFromRightWithFade(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	scene1:setAlpha(1 - t)
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.overFromLeftWithFade(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	scene1:setAlpha(1 - t)
 	scene2:setX((t - 1) * width)
 end
 
 function SceneManager.moveFromBottom(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 	
 	scene1:setY(-t * height)
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.moveFromTop(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 
 	scene1:setY(t * height)
 	scene2:setY((t - 1) * height)
 end
 
 function SceneManager.overFromBottom(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 	
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.overFromTop(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 
 	scene2:setY((t - 1) * height)
 end
 
 function SceneManager.moveFromBottomWithFade(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 	
 	scene1:setAlpha(1 - t)
 	scene1:setY(-t * height)
@@ -112,7 +133,7 @@ function SceneManager.moveFromBottomWithFade(scene1, scene2, t)
 end
 
 function SceneManager.moveFromTopWithFade(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 
 	scene1:setAlpha(1 - t)
 	scene1:setY(t * height)
@@ -121,14 +142,14 @@ end
 
 
 function SceneManager.overFromBottomWithFade(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 	
 	scene1:setAlpha(1 - t)
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.overFromTopWithFade(scene1, scene2, t)
-	local height = application:getLogicalHeight()
+	local height = getContentHeight()
 
 	scene1:setAlpha(1 - t)
 	scene2:setY((t - 1) * height)
@@ -154,7 +175,7 @@ function SceneManager.crossfade(scene1, scene2, t)
 end
 
 function SceneManager.flip(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
@@ -176,7 +197,7 @@ function SceneManager.flip(scene1, scene2, t)
 end
 
 function SceneManager.flipWithFade(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
@@ -202,7 +223,7 @@ function SceneManager.flipWithFade(scene1, scene2, t)
 end
 
 function SceneManager.flipWithShade(scene1, scene2, t)
-	local width = application:getLogicalWidth()
+	local width = getContentWidth()
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
