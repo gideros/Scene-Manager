@@ -4,6 +4,12 @@ SceneManager v1.0.3
 changelog:
 ----------
 
+v1.0.4 - 08.04.2012
+Added option to filter a list of events during transitions
+Moved increment of time to end of onEnterFrame so that time goes from 0 to 1
+Added additional "real time" argument to dispatched transitions 
+Added option to pass user data to a scene when it gets created
+
 v1.0.3 - 19.11.2011
 Fixed incorrect calculation of width/height in landscape modes
 
@@ -261,16 +267,19 @@ end
 function SceneManager:init(scenes)
 	self.scenes = scenes
 	self.tweening = false
+	self.transitionEventCatcher = Sprite.new()
 	self:addEventListener(Event.ENTER_FRAME, self.onEnterFrame, self)
 end
 
-function SceneManager:changeScene(scene, duration, transition, ease)
+function SceneManager:changeScene(scene, duration, transition, ease, options)
+	self.eventFilter = options and options.eventFilter
+
 	if self.tweening then
 		return
 	end
 	
 	if self.scene1 == nil then
-		self.scene1 = self.scenes[scene].new()
+		self.scene1 = self.scenes[scene].new(options and options.userData)
 		self:addChild(self.scene1)
 		dispatchEvent(self, "transitionBegin")
 		dispatchEvent(self.scene1, "enterBegin")
@@ -283,7 +292,7 @@ function SceneManager:changeScene(scene, duration, transition, ease)
 	self.transition = transition
 	self.ease = ease or defaultEase
 
-	self.scene2 = self.scenes[scene].new()
+	self.scene2 = self.scenes[scene].new(options and options.userData)
 	self.scene2:setVisible(false)
 	self:addChild(self.scene2)
 		
@@ -292,12 +301,35 @@ function SceneManager:changeScene(scene, duration, transition, ease)
 	self.tweening = true
 end
 
+function SceneManager:filterTransitionEvents(event)
+	event:stopPropagation()
+end
+
+function SceneManager:onTransitionBegin()
+	if self.eventFilter then
+		stage:addChild(self.transitionEventCatcher)
+		for i,event in ipairs(self.eventFilter) do
+			self.transitionEventCatcher:addEventListener(event, self.filterTransitionEvents, self)
+		end
+	end
+end
+
+function SceneManager:onTransitionEnd()
+	if self.eventFilter then
+        	for i,event in ipairs(self.eventFilter) do
+			self.transitionEventCatcher:removeEventListener(event, self.filterTransitionEvents, self)
+		end
+		self.transitionEventCatcher:removeFromParent()
+	end
+end
+
 function SceneManager:onEnterFrame(event)
 	if not self.tweening then
 		return
 	end
 
 	if self.time == 0 then
+		self:onTransitionBegin()
 		self.scene2:setVisible(true)
 		dispatchEvent(self, "transitionBegin")
 		dispatchEvent(self.scene1, "exitBegin")
@@ -308,21 +340,16 @@ function SceneManager:onEnterFrame(event)
 	local deltaTime = timer - self.currentTimer
 	self.currentTimer = timer
 
-	self.time = self.time + deltaTime
-	
-	if self.time > self.duration then
-		self.time = self.duration
-	end
-
 	local t = (self.duration == 0) and 1 or (self.time / self.duration)
 
-	self.transition(self.scene1, self.scene2, self.ease(t))
+	self.transition(self.scene1, self.scene2, self.ease(t), t)
 
 	if self.time == self.duration then
 		dispatchEvent(self, "transitionEnd")
 		dispatchEvent(self.scene1, "exitEnd")
 		dispatchEvent(self.scene2, "enterEnd")
-		
+		self:onTransitionEnd()
+
 		self:removeChild(self.scene1)
 		self.scene1 = self.scene2
 		self.scene2 = nil
@@ -330,5 +357,12 @@ function SceneManager:onEnterFrame(event)
 
 		collectgarbage()
 	end
+
+	self.time = self.time + deltaTime
+	
+	if self.time > self.duration then
+		self.time = self.duration
+	end
+
 end
 

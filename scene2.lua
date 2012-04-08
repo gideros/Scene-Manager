@@ -1,6 +1,10 @@
 Scene2 = gideros.class(Sprite)
 
-function Scene2:init()
+function Scene2:init(t)
+	if t then
+		print("Scene2: ", t)
+	end	
+
 	self:addChild(Bitmap.new(Texture.new("gfx/scene2.jpg")))
 
 	self:addEventListener("enterBegin", self.onTransitionInBegin, self)

@@ -92,25 +92,25 @@ stage:addChild(flipWithShadeButton)
 moveButton:addEventListener("click", 
 	function()	
 		local transition = transitions[math.random(1, 4)]
-		sceneManager:changeScene(nextScene(), 1, transition, easing.outBack) 
+		sceneManager:changeScene(nextScene(), 1, transition, easing.outBack, { eventFilter={Event.MOUSE_DOWN} } ) 
 	end)
 
 moveWithFadeButton:addEventListener("click", 
 	function()	
 		local transition = transitions[math.random(5, 8)]
-		sceneManager:changeScene(nextScene(), 1, transition, easing.outQuadratic) 
+		sceneManager:changeScene(nextScene(), 1, transition, easing.outQuadratic, { eventFilter={Event.MOUSE_DOWN} } ) 
 	end)
 
 overButton:addEventListener("click", 
 	function()	
 		local transition = transitions[math.random(9, 12)]
-		sceneManager:changeScene(nextScene(), 1, transition, easing.outBounce) 
+		sceneManager:changeScene(nextScene(), 1, transition, easing.outBounce, { userData = "outBounce" } ) 
 	end)
 
 overWithFadeButton:addEventListener("click", 
 	function()	
 		local transition = transitions[math.random(13, 16)]
-		sceneManager:changeScene(nextScene(), 1, transition, easing.outQuadratic) 
+		sceneManager:changeScene(nextScene(), 1, transition, easing.outQuadratic, { userData = "hello", eventFilter={Event.MOUSE_DOWN} } ) 
 	end)
 
 fadeButton:addEventListener("click", 
