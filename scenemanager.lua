@@ -1,5 +1,5 @@
 --[[
-SceneManager v1.0.3
+SceneManager v1.0.4
 
 changelog:
 ----------
