@@ -28,7 +28,7 @@ This code is MIT licensed, see http://www.opensource.org/licenses/mit-license.ph
 ]]
 
 
-SceneManager = gideros.class(Sprite)
+SceneManager = Cores.class(Sprite)
 
 local function getContentWidth()
 	local orientation = stage:getOrientation() 	
