@@ -7,7 +7,7 @@ changelog:
 v1.0.4 - 08.04.2012
 Added option to filter a list of events during transitions
 Moved increment of time to end of onEnterFrame so that time goes from 0 to 1
-Added additional "real time" argument to dispatched transitions 
+Added additional "real time" argument to dispatched transitions
 Added option to pass user data to a scene when it gets created
 
 v1.0.3 - 19.11.2011
@@ -24,48 +24,58 @@ Initial release
 
 
 This code is MIT licensed, see http://www.opensource.org/licenses/mit-license.php
-(C) 2010 - 2011 Gideros Mobile 
+(C) 2010 - 2011 Gideros Mobile
 ]]
 
 
 SceneManager = Core.class(Sprite)
 
+--[[
+The following two deltas will correct the screen offsets for different screen sizes and
+resolutions depending on a projects scale mode setting. Without them transitions between
+scenes would take the wrong dimensions and end with ugly flickering or sudden disappearance
+of objects.
+]]
+local dx = 2 * math.ceil(application:getLogicalTranslateX() / application:getLogicalScaleX())
+local dy = 2 * math.ceil(application:getLogicalTranslateY() / application:getLogicalScaleY())
+
+
 function SceneManager.moveFromRight(scene1, scene2, t)
-	local width = application:getContentWidth()
-	
+	local width = application:getContentWidth() + dx
+
 	scene1:setX(-t * width)
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.moveFromLeft(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	scene1:setX(t * width)
 	scene2:setX((t - 1) * width)
 end
 
 function SceneManager.overFromRight(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.overFromLeft(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	scene2:setX((t - 1) * width)
 end
 
 function SceneManager.moveFromRightWithFade(scene1, scene2, t)
-	local width = application:getContentWidth()
-	
+	local width = application:getContentWidth() + dx
+
 	scene1:setAlpha(1 - t)
 	scene1:setX(-t * width)
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.moveFromLeftWithFade(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	scene1:setAlpha(1 - t)
 	scene1:setX(t * width)
@@ -73,55 +83,55 @@ function SceneManager.moveFromLeftWithFade(scene1, scene2, t)
 end
 
 function SceneManager.overFromRightWithFade(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	scene1:setAlpha(1 - t)
 	scene2:setX((1 - t) * width)
 end
 
 function SceneManager.overFromLeftWithFade(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	scene1:setAlpha(1 - t)
 	scene2:setX((t - 1) * width)
 end
 
 function SceneManager.moveFromBottom(scene1, scene2, t)
-	local height = application:getContentHeight()
-	
+	local height = application:getContentHeight() + dy
+
 	scene1:setY(-t * height)
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.moveFromTop(scene1, scene2, t)
-	local height = application:getContentHeight()
+	local height = application:getContentHeight() + dy
 
 	scene1:setY(t * height)
 	scene2:setY((t - 1) * height)
 end
 
 function SceneManager.overFromBottom(scene1, scene2, t)
-	local height = application:getContentHeight()
-	
+	local height = application:getContentHeight() + dy
+
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.overFromTop(scene1, scene2, t)
-	local height = application:getContentHeight()
+	local height = application:getContentHeight() + dy
 
 	scene2:setY((t - 1) * height)
 end
 
 function SceneManager.moveFromBottomWithFade(scene1, scene2, t)
-	local height = application:getContentHeight()
-	
+	local height = application:getContentHeight() + dy
+
 	scene1:setAlpha(1 - t)
 	scene1:setY(-t * height)
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.moveFromTopWithFade(scene1, scene2, t)
-	local height = application:getContentHeight()
+	local height = application:getContentHeight() + dy
 
 	scene1:setAlpha(1 - t)
 	scene1:setY(t * height)
@@ -130,14 +140,14 @@ end
 
 
 function SceneManager.overFromBottomWithFade(scene1, scene2, t)
-	local height = application:getContentHeight()
-	
+	local height = application:getContentHeight() + dy
+
 	scene1:setAlpha(1 - t)
 	scene2:setY((1 - t) * height)
 end
 
 function SceneManager.overFromTopWithFade(scene1, scene2, t)
-	local height = application:getContentHeight()
+	local height = application:getContentHeight() + dy
 
 	scene1:setAlpha(1 - t)
 	scene2:setY((t - 1) * height)
@@ -163,7 +173,7 @@ function SceneManager.crossfade(scene1, scene2, t)
 end
 
 function SceneManager.flip(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + x
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
@@ -185,7 +195,7 @@ function SceneManager.flip(scene1, scene2, t)
 end
 
 function SceneManager.flipWithFade(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
@@ -211,7 +221,7 @@ function SceneManager.flipWithFade(scene1, scene2, t)
 end
 
 function SceneManager.flipWithShade(scene1, scene2, t)
-	local width = application:getContentWidth()
+	local width = application:getContentWidth() + dx
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
@@ -259,7 +269,7 @@ function SceneManager:changeScene(scene, duration, transition, ease, options)
 	if self.tweening then
 		return
 	end
-	
+
 	if self.scene1 == nil then
 		self.scene1 = self.scenes[scene].new(options and options.userData)
 		self:addChild(self.scene1)
@@ -277,7 +287,7 @@ function SceneManager:changeScene(scene, duration, transition, ease, options)
 	self.scene2 = self.scenes[scene].new(options and options.userData)
 	self.scene2:setVisible(false)
 	self:addChild(self.scene2)
-		
+
 	self.time = 0
 	self.currentTimer = os.timer()
 	self.tweening = true
@@ -317,7 +327,7 @@ function SceneManager:onEnterFrame(event)
 		dispatchEvent(self.scene1, "exitBegin")
 		dispatchEvent(self.scene2, "enterBegin")
 	end
-		
+
 	local timer = os.timer()
 	local deltaTime = timer - self.currentTimer
 	self.currentTimer = timer
@@ -341,10 +351,9 @@ function SceneManager:onEnterFrame(event)
 	end
 
 	self.time = self.time + deltaTime
-	
+
 	if self.time > self.duration then
 		self.time = self.duration
 	end
 
 end
-
