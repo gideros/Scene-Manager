@@ -173,7 +173,7 @@ function SceneManager.crossfade(scene1, scene2, t)
 end
 
 function SceneManager.flip(scene1, scene2, t)
-	local width = application:getContentWidth() + x
+	local width = application:getContentWidth() + dx
 
 	if t < 0.5 then
 		local s = (0.5 - t) * 2
