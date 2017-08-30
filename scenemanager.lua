@@ -1,8 +1,12 @@
 --[[
-SceneManager v1.0.4
+SceneManager v1.0.5
 
 changelog:
 ----------
+v1.0.5 - 30.08.2017
+Changed internal scene placement to use specific indexes. This allows
+us to add always-on-top children to our scenemanager object by just
+using addChild.
 
 v1.0.4 - 08.04.2012
 Added option to filter a list of events during transitions
@@ -272,7 +276,7 @@ function SceneManager:changeScene(scene, duration, transition, ease, options)
 
 	if self.scene1 == nil then
 		self.scene1 = self.scenes[scene].new(options and options.userData)
-		self:addChild(self.scene1)
+		self:addChildAt(self.scene1, 1)
 		dispatchEvent(self, "transitionBegin")
 		dispatchEvent(self.scene1, "enterBegin")
 		dispatchEvent(self, "transitionEnd")
@@ -286,7 +290,7 @@ function SceneManager:changeScene(scene, duration, transition, ease, options)
 
 	self.scene2 = self.scenes[scene].new(options and options.userData)
 	self.scene2:setVisible(false)
-	self:addChild(self.scene2)
+	self:addChildAt(self.scene2, 2)
 
 	self.time = 0
 	self.currentTimer = os.timer()
